@@ -2,7 +2,32 @@
 
 import { motion } from "framer-motion"
 
-export function ResultCard({ result, statusInfo, onReset, onBackHome }) {
+interface ResultData {
+  nama1: string
+  nama2: string
+  percentage: number
+}
+
+interface StatusInfo {
+  bg: string
+  emoji: string
+  label: string
+  desc: string
+}
+
+interface ResultCardProps {
+  result: ResultData
+  statusInfo: StatusInfo | null
+  onReset: () => void
+  onBackHome: () => void
+}
+
+export function ResultCard({
+  result,
+  statusInfo,
+  onReset,
+  onBackHome,
+}: ResultCardProps) {
   const containerVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
@@ -24,15 +49,29 @@ export function ResultCard({ result, statusInfo, onReset, onBackHome }) {
     },
   }
 
+  if (!statusInfo) return null
+
+  const handleShare = () => {
+    const text = `Aku & ${result.nama2} cocok ${result.percentage}%! 😳❤️ Cek juga nama kamu di sini: ${window.location.href}`
+    navigator.clipboard.writeText(text)
+    alert("Sudah dicopy ke clipboard!")
+  }
+
   return (
-    <motion.div className="max-w-2xl mx-auto" variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div
+      className="max-w-2xl mx-auto"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Header */}
       <motion.div className="text-center mb-8" variants={itemVariants}>
         <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 mb-2">
           Hasil Cek Jodoh
         </h1>
         <p className="text-lg text-gray-600 font-medium">
-          Antara <span className="font-bold text-purple-600">{result.nama1}</span> &{" "}
+          Antara{" "}
+          <span className="font-bold text-purple-600">{result.nama1}</span> &{" "}
           <span className="font-bold text-purple-600">{result.nama2}</span>
         </p>
       </motion.div>
@@ -51,7 +90,9 @@ export function ResultCard({ result, statusInfo, onReset, onBackHome }) {
           >
             {result.percentage}%
           </motion.div>
-          <p className="text-gray-600 font-semibold text-sm">Tingkat Kecocokan</p>
+          <p className="text-gray-600 font-semibold text-sm">
+            Tingkat Kecocokan
+          </p>
         </motion.div>
 
         {/* Status Bubble */}
@@ -64,23 +105,37 @@ export function ResultCard({ result, statusInfo, onReset, onBackHome }) {
           <motion.div
             className="text-6xl"
             animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay: 0.3 }}
+            transition={{
+              duration: 1,
+              repeat: Number.POSITIVE_INFINITY,
+              delay: 0.3,
+            }}
           >
             {statusInfo.emoji}
           </motion.div>
-          <motion.p className="text-3xl font-bold">{statusInfo.label}</motion.p>
-          <motion.p className="text-lg font-semibold leading-relaxed">{statusInfo.desc}</motion.p>
+          <motion.p className="text-3xl font-bold">
+            {statusInfo.label}
+          </motion.p>
+          <motion.p className="text-lg font-semibold leading-relaxed">
+            {statusInfo.desc}
+          </motion.p>
         </motion.div>
 
         {/* Disclaimer */}
-        <motion.div className="bg-purple-50 border-l-4 border-purple-300 rounded-lg p-4" variants={itemVariants}>
+        <motion.div
+          className="bg-purple-50 border-l-4 border-purple-300 rounded-lg p-4"
+          variants={itemVariants}
+        >
           <p className="text-sm text-purple-700 font-semibold">
             💬 Cuma buat hiburan doang ya, jangan dijadiin patokan hidup!
           </p>
         </motion.div>
 
         {/* Action Buttons */}
-        <motion.div className="flex flex-col sm:flex-row gap-4 pt-4" variants={itemVariants}>
+        <motion.div
+          className="flex flex-col sm:flex-row gap-4 pt-4"
+          variants={itemVariants}
+        >
           <motion.button
             onClick={onReset}
             whileHover={{ scale: 1.05 }}
@@ -90,12 +145,7 @@ export function ResultCard({ result, statusInfo, onReset, onBackHome }) {
             🔄 Cek Lagi
           </motion.button>
           <motion.button
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `Aku & ${result.nama2} cocok ${result.percentage}%! 😳❤️ Cek juga nama kamu di sini: ${window.location.href}`,
-              )
-              alert("Sudah dicopy ke clipboard!")
-            }}
+            onClick={handleShare}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex-1 bg-white border-2 border-purple-300 text-purple-600 font-bold py-4 px-6 rounded-2xl transition-all duration-300 hover:bg-purple-50 uppercase tracking-wider text-lg"

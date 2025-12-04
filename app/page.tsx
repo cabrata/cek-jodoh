@@ -11,58 +11,76 @@ import { Testimonials } from "@/components/testimonials"
 import { RelatedGames } from "@/components/related-games"
 import { Footer } from "@/components/footer"
 
+type MatchStatusKey = "cari_lagi" | "sulit" | "mungkin" | "tidak_cocok" | "cocok"
+
+interface StatusInfo {
+  label: string
+  emoji: string
+  bg: string
+  lightBg: string
+  text: string
+  desc: string
+}
+
+interface MatchResult {
+  percentage: number
+  status: MatchStatusKey
+  nama1: string
+  nama2: string
+}
+
+const statuses: Record<MatchStatusKey, StatusInfo> = {
+  cari_lagi: {
+    label: "Cari lagi",
+    emoji: "😵",
+    bg: "from-red-400 to-red-500",
+    lightBg: "bg-red-100",
+    text: "text-red-700",
+    desc: "Fix belum jodoh, lanjut scroll chat yang lain dulu 😆",
+  },
+  sulit: {
+    label: "Sulit",
+    emoji: "😬",
+    bg: "from-orange-400 to-orange-500",
+    lightBg: "bg-orange-100",
+    text: "text-orange-700",
+    desc: "Hubungan level hard, usaha kalian harus double.",
+  },
+  mungkin: {
+    label: "Mungkin",
+    emoji: "🤔",
+    bg: "from-yellow-400 to-yellow-500",
+    lightBg: "bg-yellow-100",
+    text: "text-yellow-700",
+    desc: "Masih abu-abu, tergantung seberapa niat kalian.",
+  },
+  tidak_cocok: {
+    label: "Tidak cocok",
+    emoji: "💔",
+    bg: "from-pink-400 to-pink-500",
+    lightBg: "bg-pink-100",
+    text: "text-pink-700",
+    desc: "Lebih aman jadi temen curhat aja.",
+  },
+  cocok: {
+    label: "Cocok",
+    emoji: "💘",
+    bg: "from-rose-400 to-rose-500",
+    lightBg: "bg-rose-100",
+    text: "text-rose-700",
+    desc: "Waduh, ini sih couple goal calon chat tiap malam.",
+  },
+}
+
 export default function Home() {
-  const [nama1, setNama1] = useState("")
-  const [nama2, setNama2] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState(null)
-  const [error, setError] = useState("")
-  const [showChecker, setShowChecker] = useState(false)
+  const [nama1, setNama1] = useState<string>("")
+  const [nama2, setNama2] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+  const [result, setResult] = useState<MatchResult | null>(null)
+  const [error, setError] = useState<string>("")
+  const [showChecker, setShowChecker] = useState<boolean>(false)
 
-  const statuses = {
-    cari_lagi: {
-      label: "Cari lagi",
-      emoji: "😵",
-      bg: "from-red-400 to-red-500",
-      lightBg: "bg-red-100",
-      text: "text-red-700",
-      desc: "Fix belum jodoh, lanjut scroll chat yang lain dulu 😆",
-    },
-    sulit: {
-      label: "Sulit",
-      emoji: "😬",
-      bg: "from-orange-400 to-orange-500",
-      lightBg: "bg-orange-100",
-      text: "text-orange-700",
-      desc: "Hubungan level hard, usaha kalian harus double.",
-    },
-    mungkin: {
-      label: "Mungkin",
-      emoji: "🤔",
-      bg: "from-yellow-400 to-yellow-500",
-      lightBg: "bg-yellow-100",
-      text: "text-yellow-700",
-      desc: "Masih abu-abu, tergantung seberapa niat kalian.",
-    },
-    tidak_cocok: {
-      label: "Tidak cocok",
-      emoji: "💔",
-      bg: "from-pink-400 to-pink-500",
-      lightBg: "bg-pink-100",
-      text: "text-pink-700",
-      desc: "Lebih aman jadi temen curhat aja.",
-    },
-    cocok: {
-      label: "Cocok",
-      emoji: "💘",
-      bg: "from-rose-400 to-rose-500",
-      lightBg: "bg-rose-100",
-      text: "text-rose-700",
-      desc: "Waduh, ini sih couple goal calon chat tiap malam.",
-    },
-  }
-
-  const calculateMatch = (name1, name2) => {
+  const calculateMatch = (name1: string, name2: string): number => {
     const combined = (name1 + name2).toLowerCase()
     let sum = 0
     for (const char of combined) {
@@ -71,7 +89,7 @@ export default function Home() {
     return sum % 101
   }
 
-  const getStatus = (percentage) => {
+  const getStatus = (percentage: number): MatchStatusKey => {
     if (percentage <= 20) return "cari_lagi"
     if (percentage <= 40) return "sulit"
     if (percentage <= 60) return "mungkin"
@@ -79,7 +97,7 @@ export default function Home() {
     return "cocok"
   }
 
-  const handleCheck = async () => {
+  const handleCheck = async (): Promise<void> => {
     setError("")
 
     if (!nama1.trim()) {
@@ -94,7 +112,7 @@ export default function Home() {
 
     setLoading(true)
 
-    await new Promise((resolve) => setTimeout(resolve, 2500))
+    await new Promise<void>((resolve) => setTimeout(resolve, 2500))
 
     const percentage = calculateMatch(nama1, nama2)
     const status = getStatus(percentage)
@@ -108,18 +126,17 @@ export default function Home() {
     setLoading(false)
   }
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     setResult(null)
     setNama1("")
     setNama2("")
     setError("")
   }
 
-  const statusInfo = result ? statuses[result.status] : null
+  const statusInfo: StatusInfo | null = result ? statuses[result.status] : null
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-pink-100 via-rose-50 to-purple-100">
-
       <AnimatePresence mode="wait">
         {showChecker && !result ? (
           <motion.div

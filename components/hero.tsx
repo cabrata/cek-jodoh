@@ -2,7 +2,11 @@
 
 import { motion } from "framer-motion"
 
-export function Hero({ onStartClick }) {
+interface HeroProps {
+  onStartClick: () => void
+}
+
+export function Hero({ onStartClick }: HeroProps) {
   return (
     <section className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="max-w-4xl w-full">
@@ -24,7 +28,7 @@ export function Hero({ onStartClick }) {
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-black">
               <motion.span
                 className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600"
-                animate={{ backgroundPosition: ["0%", "100%"] }}
+                animate={{ backgroundPositionX: ["0%", "100%"] }}
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
               >
                 Cek Jodoh
@@ -88,9 +92,14 @@ export function Hero({ onStartClick }) {
           >
             {["💕", "✨", "💘"].map((emoji, i) => (
               <motion.span
+                // eslint-disable-next-line react/no-array-index-key
                 key={i}
                 animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 2, delay: i * 0.3, repeat: Number.POSITIVE_INFINITY }}
+                transition={{
+                  duration: 2,
+                  delay: i * 0.3,
+                  repeat: Number.POSITIVE_INFINITY,
+                }}
               >
                 {emoji}
               </motion.span>

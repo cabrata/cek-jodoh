@@ -11,7 +11,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Cek Jodoh - Hiburan",
   description: "Cek kecocokan nama pasangan kamu, cuma buat hiburan doang",
-  generator: "v0.app",
   icons: {
     icon: [
       {

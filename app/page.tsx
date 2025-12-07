@@ -11,7 +11,7 @@ import { Testimonials } from "@/components/testimonials"
 import { RelatedGames } from "@/components/related-games"
 import { Footer } from "@/components/footer"
 
-type MatchStatusKey = "cari_lagi" | "sulit" | "mungkin" | "tidak_cocok" | "cocok"
+type MatchStatusKey = "sulit" | "mungkin" | "tidak_cocok" | "cocok"
 
 interface StatusInfo {
   label: string

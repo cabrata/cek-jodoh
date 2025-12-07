@@ -30,14 +30,6 @@ interface MatchResult {
 }
 
 const statuses: Record<MatchStatusKey, StatusInfo> = {
-  cari_lagi: {
-    label: "Cari lagi",
-    emoji: "😵",
-    bg: "from-red-400 to-red-500",
-    lightBg: "bg-red-100",
-    text: "text-red-700",
-    desc: "Fix belum jodoh, lanjut scroll chat yang lain dulu 😆",
-  },
   sulit: {
     label: "Sulit",
     emoji: "😬",
@@ -115,12 +107,12 @@ const calculateMatch = (name1: string, name2: string): number => {
 
 
   const getStatus = (percentage: number): MatchStatusKey => {
-    if (percentage <= 20) return "cari_lagi"
-    if (percentage <= 40) return "sulit"
-    if (percentage <= 60) return "mungkin"
-    if (percentage <= 80) return "tidak_cocok"
-    return "cocok"
-  }
+  if (percentage < 55) return "sulit"
+  if (percentage < 65) return "tidak_cocok"
+  if (percentage < 80) return "mungkin"
+  return "cocok"
+}
+
 
   const handleCheck = async (): Promise<void> => {
     setError("")

@@ -80,14 +80,39 @@ export default function Home() {
   const [error, setError] = useState<string>("")
   const [showChecker, setShowChecker] = useState<boolean>(false)
 
-  const calculateMatch = (name1: string, name2: string): number => {
-    const combined = (name1 + name2).toLowerCase()
-    let sum = 0
-    for (const char of combined) {
-      sum += char.charCodeAt(0)
-    }
-    return sum % 101
+
+const mulberry32 = (seed: number) => {
+  return function () {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+
+const stringToSeed = (str: string): number => {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
   }
+  return h >>> 0;
+};
+
+const calculateMatch = (name1: string, name2: string): number => {
+  const today = new Date().toISOString().slice(0, 10); 
+
+
+  const seedString = (name1 + name2 + today).toLowerCase();
+  const seed = stringToSeed(seedString);
+
+  const random = mulberry32(seed)(); 
+
+  const score = Math.round(40 + random * 60);
+
+  return score;
+};
+
 
   const getStatus = (percentage: number): MatchStatusKey => {
     if (percentage <= 20) return "cari_lagi"
